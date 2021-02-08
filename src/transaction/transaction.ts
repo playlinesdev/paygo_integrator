@@ -11,7 +11,7 @@ export class Transaction {
     @Column({ type: 'decimal', scale: 2, precision: 11 })
     amount: Number
 
-    @Column({ name: 'reference_id' })
+    @Column({ name: 'reference_id', unique: true })
     referenceId: String
 
     @Column({ nullable: true, name: 'paygo_transaction_id' })

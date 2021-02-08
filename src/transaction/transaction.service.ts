@@ -15,6 +15,14 @@ export class TransactionService {
         private apiSettingsService: ApiSettingsService
     ) { }
 
+    async findOrdersOfUser(userId: Number) {
+        return await this.repository.find({ where: { userId: userId } })
+    }
+
+    async findOrderById(orderId: Number) {
+        return await this.repository.findOne({ where: { referenceId: orderId } })
+    }
+
     async createEnterativePurchase(userId: Number, amount: Number) {
         let shopId = await this.userMappingService.getUserShopId(userId)
         if (!shopId)
@@ -59,5 +67,30 @@ export class TransactionService {
 
         let saved = await this.repository.save(transaction)
         return saved
+    }
+
+    async activateOrder(orderId: Number) {
+
+        try {
+            let apiSettings = await this.apiSettingsService.findFirst()
+            let baseUrl = apiSettings.getEnterativeUrl()
+            let url = baseUrl + `/paygoIntegrator/purchage_order/activate?purchaseOrderId=${orderId}`
+            let agent = new https.Agent({ rejectUnauthorized: false });
+            let response = await axios.post(url, {}, {
+                timeout: process.env.ENTERATIVE_TIMEOUT ? Number(process.env.ENTERATIVE_TIMEOUT) : 5000,
+                httpsAgent: agent,
+                withCredentials: true,
+                auth: {
+                    username: apiSettings.enterativePayGoUser.toString(),
+                    password: apiSettings.enterativePayGoPassword.toString()
+                },
+            })
+            let result = response.data.response.entity
+            let purchaseOrder = await this.findOrderById(orderId)
+            purchaseOrder.enterativeActivated = result.status == "ACTIVE"
+            return this.repository.save(purchaseOrder)
+        } catch (error) {
+            throw new InternalServerErrorException(error)
+        }
     }
 }
