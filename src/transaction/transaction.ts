@@ -14,7 +14,7 @@ export class Transaction {
     @Column({ name: 'reference_id' })
     referenceId: String
 
-    @Column({ default: '', name: 'paygo_transaction_id' })
+    @Column({ nullable: true, name: 'paygo_transaction_id' })
     paygoTransactionId?: String
 
     @Column({ type: 'int', name: 'paygo_status' })

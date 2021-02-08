@@ -7,8 +7,9 @@ export class TransactionController {
     constructor(private transactionService: TransactionService) { }
 
     @Get('/createOrder')
-    async createOrder(@Query('userId') userId: String, @Query('amount') amount: Number, @Query('shopId') shopId: Number) {
-        let response = await this.transactionService.createPurchase(userId, amount, shopId);
-        return response.data.response.entity
+    async createOrder(@Query('userId') userId: Number, @Query('amount') amount: Number, @Query('shopId') shopId: Number) {
+        let enterativePurchase = await this.transactionService.createEnterativePurchase(userId, amount, shopId)
+        let purchaseOrder = await this.transactionService.createPayGoPurchase(userId, enterativePurchase)
+        return purchaseOrder
     }
 }

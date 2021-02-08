@@ -9,17 +9,16 @@ import * as https from 'https'
 @Injectable()
 export class TransactionService {
     constructor(
-        @InjectRepository(Transaction) repository: Repository<Transaction>,
+        @InjectRepository(Transaction) private readonly repository: Repository<Transaction>,
         private httpService: HttpService,
         private apiSettingsService: ApiSettingsService
     ) { }
 
-    async createPurchase(userId: String, amount: Number, shopId: Number) {
+    async createEnterativePurchase(userId: Number, amount: Number, shopId: Number) {
         try {
             let apiSettings = await this.apiSettingsService.findFirst()
             let baseUrl = apiSettings.getEnterativeUrl()
             let url = baseUrl + `/paygoIntegrator/purchase_order/create?userId=${userId}&value=${amount}&shopId=${shopId}`
-            console.log(url)
             let agent = new https.Agent({ rejectUnauthorized: false });
             let response = await axios.post(url, {}, {
                 timeout: process.env.ENTERATIVE_TIMEOUT ? Number(process.env.ENTERATIVE_TIMEOUT) : 5000,
@@ -30,12 +29,31 @@ export class TransactionService {
                     password: apiSettings.enterativePayGoPassword.toString()
                 },
             })
-            console.log(response.data)
             return response.data.response.entity
         } catch (error) {
-            console.log(error.code)
-            console.log(error.message)
             throw new InternalServerErrorException(error.message)
         }
+    }
+
+    async createPayGoPurchase(userId: Number, enterativePurchase: any) {
+        let date = new Date()
+        date.setSeconds(date.getSeconds() + 60)
+        let apiSettings = await this.apiSettingsService.findFirst()
+
+        let transaction = new Transaction()
+        transaction.amount = enterativePurchase.totalAmount
+        transaction.description = enterativePurchase.lines[0].name
+        transaction.enterativeActivated = enterativePurchase.status == "ACTIVATED"
+        transaction.expirationDateTime = date
+        transaction.paygoStatus = 0
+        transaction.paygoTransactionId = null
+        transaction.paymentPixProvider = apiSettings.paygoPixProvider
+        transaction.purchaseDate = new Date()
+        transaction.qrCode = null
+        transaction.referenceId = enterativePurchase.id.toString()
+        transaction.userId = userId
+
+        let saved = await this.repository.save(transaction)
+        return saved
     }
 }
