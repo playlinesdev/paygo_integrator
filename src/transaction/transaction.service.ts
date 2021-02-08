@@ -1,20 +1,24 @@
-import { HttpService, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { HttpService, Injectable, InternalServerErrorException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ApiSettingsService } from 'src/api-settings/api-settings.service';
 import { Repository } from 'typeorm';
 import { Transaction } from './transaction';
 import axios from 'axios'
 import * as https from 'https'
+import { UserMappingService } from 'src/user-mapping/user-mapping.service';
 
 @Injectable()
 export class TransactionService {
     constructor(
         @InjectRepository(Transaction) private readonly repository: Repository<Transaction>,
-        private httpService: HttpService,
+        private userMappingService: UserMappingService,
         private apiSettingsService: ApiSettingsService
     ) { }
 
-    async createEnterativePurchase(userId: Number, amount: Number, shopId: Number) {
+    async createEnterativePurchase(userId: Number, amount: Number) {
+        let shopId = await this.userMappingService.getUserShopId(userId)
+        if (!shopId)
+            throw new UnprocessableEntityException(`The user ${userId} has no shop set on the UserMapping table and it's mandatory`)
         try {
             let apiSettings = await this.apiSettingsService.findFirst()
             let baseUrl = apiSettings.getEnterativeUrl()

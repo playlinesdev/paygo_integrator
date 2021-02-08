@@ -7,6 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ApiSettings } from './api-settings/api-settings';
 import { TransactionModule } from './transaction/transaction.module';
 import { Transaction } from './transaction/transaction';
+import { UserMappingModule } from './user-mapping/user-mapping.module';
+import { UserMapping } from './user-mapping/user-mapping';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -19,10 +21,10 @@ import { Transaction } from './transaction/transaction';
     username: process.env.MYSQL_USER ?? 'root',
     password: process.env.MYSQL_PASSWORD ?? 'root',
     database: process.env.MYSQL_DATABASE ?? 'enterative_pay',
-    entities: [ApiSettings, Transaction],
+    entities: [ApiSettings, Transaction, UserMapping],
     synchronize: true,
     // logging: true,
-  }), ApiSettingsModule, TransactionModule],
+  }), ApiSettingsModule, TransactionModule, UserMappingModule],
   controllers: [AppController],
   providers: [AppService],
 })
