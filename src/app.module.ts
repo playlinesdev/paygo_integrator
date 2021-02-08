@@ -6,6 +6,7 @@ import { ApiSettingsModule } from './api-settings/api-settings.module';
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ApiSettings } from './api-settings/api-settings';
 import { TransactionModule } from './transaction/transaction.module';
+import { Transaction } from './transaction/transaction';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -18,9 +19,9 @@ import { TransactionModule } from './transaction/transaction.module';
     username: process.env.MYSQL_USER ?? 'root',
     password: process.env.MYSQL_PASSWORD ?? 'root',
     database: process.env.MYSQL_DATABASE ?? 'enterative_pay',
-    entities: [ApiSettings],
+    entities: [ApiSettings, Transaction],
     synchronize: true,
-    logging: true,
+    // logging: true,
   }), ApiSettingsModule, TransactionModule],
   controllers: [AppController],
   providers: [AppService],

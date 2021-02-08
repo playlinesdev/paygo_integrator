@@ -35,6 +35,6 @@ export class Transaction {
     @CreateDateColumn({ name: 'expiration_date_time' })
     expirationDateTime: Date
 
-    @CreateDateColumn({ name: 'purchase_date', default: new Date() })
+    @CreateDateColumn({ name: 'purchase_date' })
     purchaseDate: Date
 }

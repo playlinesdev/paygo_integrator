@@ -37,4 +37,8 @@ export class ApiSettings {
 
     @Column()
     puchaseDescriptionTemplate: String
+
+    getEnterativeUrl(): string {
+        return `${this.enterativeHost}:${this.enterativePort.toString()}`
+    }
 }
