@@ -1,7 +1,8 @@
 import { Controller, Get, NotFoundException, Param, Post, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserMappingService } from './user-mapping.service';
 
+@ApiBearerAuth('bearer')
 @ApiTags('User Mapping')
 @Controller('user-mapping')
 export class UserMappingController {

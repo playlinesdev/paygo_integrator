@@ -1,7 +1,8 @@
 import { ConflictException, Controller, Get, NotFoundException, Post, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TransactionService } from './transaction.service';
 
+@ApiBearerAuth('bearer')
 @ApiTags('Transaction')
 @Controller('transaction')
 export class TransactionController {

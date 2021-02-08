@@ -27,8 +27,10 @@ async function bootstrap() {
     .setDescription(description)
     .setVersion(process.env.npm_package_version)
     .setContact('Bruno Rafante', '', 'rafante2@gmail.com')
+    .addSecurity('bearer', { type: 'http', scheme: 'bearer' })
     .build();
   const document = SwaggerModule.createDocument(app, config);
+
   SwaggerModule.setup('api-client', app, document);
 
   await app.init();

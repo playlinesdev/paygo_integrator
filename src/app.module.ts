@@ -10,6 +10,8 @@ import { Transaction } from './transaction/transaction';
 import { UserMappingModule } from './user-mapping/user-mapping.module';
 import { UserMapping } from './user-mapping/user-mapping';
 import { UserModule } from './user/user.module';
+// import { JwtService } from '@nestjs/jwt';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -25,7 +27,7 @@ import { UserModule } from './user/user.module';
     entities: [ApiSettings, Transaction, UserMapping],
     synchronize: true,
     // logging: true,
-  }), ApiSettingsModule, TransactionModule, UserMappingModule, UserModule],
+  }), TransactionModule, UserModule, AuthModule, ApiSettingsModule, UserMappingModule],
   controllers: [AppController],
   providers: [AppService],
 })

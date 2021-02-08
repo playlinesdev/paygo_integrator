@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ApiSettingsService } from 'src/api-settings/api-settings.service';
 import { UserMappingService } from 'src/user-mapping/user-mapping.service';
-import axios from 'axios'
+import axios, { AxiosBasicCredentials } from 'axios'
 import * as https from 'https'
 
 @Injectable()
@@ -11,7 +11,8 @@ export class UserService {
         private apiSettingsService: ApiSettingsService
     ) { }
 
-    async getUserInfo(userId?: Number, login?: String) {
+    async getUserInfo(params: { userId?: Number, login?: String, credentials?: AxiosBasicCredentials }) {
+        const { userId, login, credentials } = params
         let apiSettings = await this.apiSettingsService.findFirst()
         let baseUrl = apiSettings.getEnterativeUrl()
         let url = baseUrl + `/paygoIntegrator/user/get_info`
@@ -25,14 +26,14 @@ export class UserService {
                     id: userId ?? '',
                     login: login ?? ''
                 },
-                auth: {
+                auth: credentials ?? {
                     username: apiSettings.enterativePayGoUser.toString(),
                     password: apiSettings.enterativePayGoPassword.toString()
                 },
             })
             return response.data
         } catch (error) {
-            throw new InternalServerErrorException(error.message)
+            return null
         }
     }
 }

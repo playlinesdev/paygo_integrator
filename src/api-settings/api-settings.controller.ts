@@ -1,13 +1,17 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ApiSettings } from './api-settings';
 import { ApiSettingsService } from './api-settings.service';
 
+@ApiBearerAuth('bearer')
 @ApiTags('Api Settings')
 @Controller('api-settings')
 export class ApiSettingsController {
     constructor(private apiSettingsService: ApiSettingsService) { }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
     async findFirst(): Promise<ApiSettings> {
         let first = await this.apiSettingsService.findFirst();
