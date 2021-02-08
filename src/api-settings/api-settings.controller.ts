@@ -13,7 +13,7 @@ export class ApiSettingsController {
         return first
     }
 
-    @ApiBody({ type: ApiSettings })
+    @ApiBody({ type: ApiSettings, required: true })
     @Post()
     async insertOne(@Body() apiSettings: ApiSettings) {
         return await this.apiSettingsService.insert(apiSettings);

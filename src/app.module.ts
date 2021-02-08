@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ApiSettingsModule } from './api-settings/api-settings.module';
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ApiSettings } from './api-settings/api-settings';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -20,7 +21,7 @@ import { ApiSettings } from './api-settings/api-settings';
     entities: [ApiSettings],
     synchronize: true,
     logging: true,
-  }), ApiSettingsModule],
+  }), ApiSettingsModule, TransactionModule],
   controllers: [AppController],
   providers: [AppService],
 })
