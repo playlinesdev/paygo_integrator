@@ -9,6 +9,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { Transaction } from './transaction/transaction';
 import { UserMappingModule } from './user-mapping/user-mapping.module';
 import { UserMapping } from './user-mapping/user-mapping';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -24,7 +25,7 @@ import { UserMapping } from './user-mapping/user-mapping';
     entities: [ApiSettings, Transaction, UserMapping],
     synchronize: true,
     // logging: true,
-  }), ApiSettingsModule, TransactionModule, UserMappingModule],
+  }), ApiSettingsModule, TransactionModule, UserMappingModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })
