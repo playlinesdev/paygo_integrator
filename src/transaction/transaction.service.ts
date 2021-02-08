@@ -19,6 +19,18 @@ export class TransactionService {
         return await this.repository.find({ where: { userId: userId } })
     }
 
+    async findPaygoPendentOrders() {
+        return await this.repository.createQueryBuilder('paygoPendent').andWhere('paygo_status <> 6').getMany()
+    }
+
+    async findEnterativePendentOrders() {
+        return await this.repository.createQueryBuilder('enterativePendent').where('paygo_status = 6').andWhere('enterative_activated = 0').getMany()
+    }
+
+    async findOrdersNotSyncedWithPayGo() {
+        return await this.repository.find({ where: { paygoTransactionId: null } })
+    }
+
     async findOrderById(orderId: Number) {
         return await this.repository.findOne({ where: { referenceId: orderId } })
     }

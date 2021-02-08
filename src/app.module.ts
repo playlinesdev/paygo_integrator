@@ -10,8 +10,9 @@ import { Transaction } from './transaction/transaction';
 import { UserMappingModule } from './user-mapping/user-mapping.module';
 import { UserMapping } from './user-mapping/user-mapping';
 import { UserModule } from './user/user.module';
-// import { JwtService } from '@nestjs/jwt';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth/auth.module';
+import { PaygoModule } from './paygo/paygo.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -27,7 +28,7 @@ import { AuthModule } from './auth/auth.module';
     entities: [ApiSettings, Transaction, UserMapping],
     synchronize: true,
     // logging: true,
-  }), TransactionModule, UserModule, AuthModule, ApiSettingsModule, UserMappingModule],
+  }), ScheduleModule.forRoot(), TransactionModule, UserModule, AuthModule, ApiSettingsModule, UserMappingModule, PaygoModule],
   controllers: [AppController],
   providers: [AppService],
 })
