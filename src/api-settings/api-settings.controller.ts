@@ -11,7 +11,7 @@ import { ApiSettingsService } from './api-settings.service';
 export class ApiSettingsController {
     constructor(private apiSettingsService: ApiSettingsService) { }
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get()
     async findFirst(): Promise<ApiSettings> {
         let first = await this.apiSettingsService.findFirst();
