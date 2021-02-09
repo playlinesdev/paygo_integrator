@@ -19,7 +19,6 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  // @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Query('username') username: String, @Query('password') password: String) {
     let user = await this.authService.validateUser(username, password)

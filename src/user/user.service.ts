@@ -1,13 +1,11 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ApiSettingsService } from 'src/api-settings/api-settings.service';
-import { UserMappingService } from 'src/user-mapping/user-mapping.service';
 import axios, { AxiosBasicCredentials } from 'axios'
 import * as https from 'https'
 
 @Injectable()
 export class UserService {
     constructor(
-        private userMappingService: UserMappingService,
         private apiSettingsService: ApiSettingsService
     ) { }
 
