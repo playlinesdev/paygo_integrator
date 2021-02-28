@@ -5,6 +5,8 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ApiSettings } from 'src/api-settings/api-settings';
 import { ApiSettingsService } from 'src/api-settings/api-settings.service';
+import { EnterativeJobManager } from 'src/enterative-job-manager/enterative-job-manager';
+import { EnterativeJobManagerService } from 'src/enterative-job-manager/enterative-job-manager.service';
 import { UserMapping } from 'src/user-mapping/user-mapping';
 import { UserMappingService } from 'src/user-mapping/user-mapping.service';
 import { UserModule } from 'src/user/user.module';
@@ -19,12 +21,12 @@ import { LocalStrategy } from './local.strategy';
     imports: [
         UserModule,
         PassportModule,
-        TypeOrmModule.forFeature([ApiSettings, UserMapping]),
+        TypeOrmModule.forFeature([ApiSettings, UserMapping, EnterativeJobManager]),
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: jwtConstants.expiresIn }
         }),],
-    providers: [LocalStrategy, AuthService, LocalAuthGuard, UserService, JwtStrategy, ApiSettingsService, UserMappingService],
+    providers: [LocalStrategy, AuthService, LocalAuthGuard, UserService, JwtStrategy, ApiSettingsService, UserMappingService, EnterativeJobManagerService],
     exports: [AuthService, UserService]
 })
 export class AuthModule { }

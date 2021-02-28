@@ -14,19 +14,19 @@ export class ApiSettingsController {
         let first = await this.apiSettingsService.findFirst();
         if (first)
             return first
-        throw new NotFoundException()
+        throw new NotFoundException('No api settings found. Use the /set method to set it up')
     }
 
-    @ApiQuery({ required: false, name: 'name' })
-    @ApiQuery({ required: false, name: 'enterativeHost' })
-    @ApiQuery({ required: false, name: 'enterativePort' })
-    @ApiQuery({ required: false, name: 'enterativePayGoUser' })
-    @ApiQuery({ required: false, name: 'enterativePayGoPassword' })
-    @ApiQuery({ required: false, name: 'paygoAuthenticationApi' })
-    @ApiQuery({ required: false, name: 'paygoAuthenticationKey' })
-    @ApiQuery({ required: false, name: 'paygoBaseUrl' })
-    @ApiQuery({ required: false, name: 'paygoPixKey' })
-    @ApiQuery({ required: false, name: 'paygoPixProvider' })
+    @ApiQuery({ required: false, name: 'name', example: 'dev' })
+    @ApiQuery({ required: false, name: 'enterativeHost', example: 'https://192.168.1.1' })
+    @ApiQuery({ required: false, name: 'enterativePort', example: '8080' })
+    @ApiQuery({ required: false, name: 'enterativePayGoUser', example: 'paygoIntegrator' })
+    @ApiQuery({ required: false, name: 'enterativePayGoPassword', example: 'paygo' })
+    @ApiQuery({ required: false, name: 'paygoAuthenticationApi', example: 'chart.claudio' })
+    @ApiQuery({ required: false, name: 'paygoAuthenticationKey', example: 'FD1C186AA04684FC6966' })
+    @ApiQuery({ required: false, name: 'paygoBaseUrl', example: 'https://apidemo.gate2all.com.br/v1/transactions/' })
+    @ApiQuery({ required: false, name: 'paygoPixKey', example: 'RANDOM_KEY' })
+    @ApiQuery({ required: false, name: 'paygoPixProvider', example: 'C6BANK' })
     @ApiQuery({ required: false, name: 'puchaseDescriptionTemplate' })
     @Post('/set')
     async inserOrUpdate(
@@ -57,12 +57,12 @@ export class ApiSettingsController {
         settings.paygoPixProvider = paygoPixProvider
         settings.puchaseDescriptionTemplate = puchaseDescriptionTemplate
 
-        return await this.apiSettingsService.insert(settings)
+        return await this.apiSettingsService.insertOrUpdate(settings)
     }
 
     @ApiBody({ type: ApiSettings, required: true })
     @Post()
     async insertOne(@Body() apiSettings: ApiSettings) {
-        return await this.apiSettingsService.insert(apiSettings);
+        return await this.apiSettingsService.insertOrUpdate(apiSettings);
     }
 }

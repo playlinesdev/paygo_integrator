@@ -1,0 +1,6 @@
+netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=8080 connectaddress=ip_wsl2
+netsh interface portproxy add v4tov4 listenport=443 listenaddress=0.0.0.0 connectport=443 connectaddress=ip_wsl2
+
+Don't forget to allow port on firewall
+
+WSL2 needs this trick to forward port

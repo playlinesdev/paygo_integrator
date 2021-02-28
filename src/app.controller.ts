@@ -1,9 +1,9 @@
-import { Controller, Get, Post, UseGuards, Request, Query } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Request, Query, InternalServerErrorException } from '@nestjs/common';
 import { ApiBearerAuth, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import { ApiSettingsService } from './api-settings/api-settings.service';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { LocalAuthGuard } from './auth/local-auth.guard';
 
 @ApiBearerAuth('bearer')
 @ApiTags('Public')
@@ -11,6 +11,7 @@ import { LocalAuthGuard } from './auth/local-auth.guard';
 export class AppController {
   constructor(
     private readonly appService: AppService,
+    private readonly apiSettingsService: ApiSettingsService,
     private readonly authService: AuthService
   ) { }
 
@@ -29,5 +30,17 @@ export class AppController {
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
+  }
+
+  @Get('testDatabaseConnection')
+  async testDbConnection() {
+    try {
+      let time = new Date().getTime()
+      let settings = await this.apiSettingsService.findFirst()
+      let end = (new Date().getTime() - time)
+      return `Database reached in ${end} milliseconds`
+    } catch (error) {
+      throw new InternalServerErrorException(`Could not connect to the database at ${process.env.MYSQL_HOST}:${process.env.MYSQL_PORT}`)
+    }
   }
 }

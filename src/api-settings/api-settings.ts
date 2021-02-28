@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 @Entity()
 export class ApiSettings {
     @PrimaryColumn({ generated: true })
-    id: Number
+    id: number
 
     @Column()
     name: String
@@ -35,7 +35,7 @@ export class ApiSettings {
     @Column()
     paygoPixKey: String
 
-    @Column()
+    @Column({ default: '' })
     puchaseDescriptionTemplate: String
 
     getEnterativeUrl(): string {

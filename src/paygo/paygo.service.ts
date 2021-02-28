@@ -91,6 +91,7 @@ export class PaygoService {
     async searchPaygoTransaction(transactionId: String) {
         try {
             let url = `${this.apiSettings.paygoBaseUrl}${transactionId}`
+
             var response = await axios.get(url, {
                 headers: {
                     "authenticationApi": this.apiSettings.paygoAuthenticationApi,

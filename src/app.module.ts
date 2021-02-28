@@ -13,6 +13,9 @@ import { UserModule } from './user/user.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth/auth.module';
 import { PaygoModule } from './paygo/paygo.module';
+import { EnterativeJobManagerModule } from './enterative-job-manager/enterative-job-manager.module';
+import { EnterativeJobManager } from './enterative-job-manager/enterative-job-manager';
+import { ApiSettingsService } from './api-settings/api-settings.service';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -25,11 +28,11 @@ import { PaygoModule } from './paygo/paygo.module';
     username: process.env.MYSQL_USER ?? 'root',
     password: process.env.MYSQL_PASSWORD ?? 'root',
     database: process.env.MYSQL_DATABASE ?? 'enterative_pay',
-    entities: [ApiSettings, Transaction, UserMapping],
+    entities: [ApiSettings, Transaction, UserMapping, EnterativeJobManager,],
     synchronize: true,
     // logging: true,
-  }), ScheduleModule.forRoot(), TransactionModule, UserModule, AuthModule, ApiSettingsModule, UserMappingModule, PaygoModule],
+  }), TypeOrmModule.forFeature([ApiSettings]), ScheduleModule.forRoot(), TransactionModule, UserModule, AuthModule, ApiSettingsModule, UserMappingModule, PaygoModule, EnterativeJobManagerModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ApiSettingsService],
 })
 export class AppModule { }

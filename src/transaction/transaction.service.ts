@@ -82,7 +82,6 @@ export class TransactionService {
     }
 
     async activateOrder(orderId: Number) {
-
         try {
             let apiSettings = await this.apiSettingsService.findFirst()
             let baseUrl = apiSettings.getEnterativeUrl()
