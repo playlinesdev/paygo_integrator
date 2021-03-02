@@ -30,7 +30,7 @@ export class TransactionController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('reference/:id')
+    @Get('/reference/:id')
     async getOrderByReference(@Param('id') id: Number) {
         return this.transactionService.findOrderById(id)
     }
