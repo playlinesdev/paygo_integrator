@@ -6,6 +6,7 @@ import { Transaction } from './transaction';
 import axios from 'axios'
 import * as https from 'https'
 import { UserMappingService } from 'src/user-mapping/user-mapping.service';
+import { TransactionStatus } from './transaction_enum';
 
 @Injectable()
 export class TransactionService {
@@ -20,11 +21,11 @@ export class TransactionService {
     }
 
     async findPaygoPendentOrders() {
-        return await this.repository.createQueryBuilder('paygoPendent').andWhere('paygo_status <> 6').getMany()
+        return await this.repository.createQueryBuilder('paygoPendent').andWhere('payment_provider_status <> 6 and payment_provider_status <> 11 and paygo_transaction_id is not null').getMany()
     }
 
     async findEnterativePendentOrders() {
-        return await this.repository.createQueryBuilder('enterativePendent').where('paygo_status = 6').andWhere('enterative_activated = 0').getMany()
+        return await this.repository.createQueryBuilder('enterativePendent').where('payment_provider_status = 6').andWhere('enterative_activated = 0').getMany()
     }
 
     async findOrdersNotSyncedWithPayGo() {
@@ -69,7 +70,7 @@ export class TransactionService {
         transaction.description = enterativePurchase.lines[0].name
         transaction.enterativeActivated = enterativePurchase.status == "ACTIVATED"
         transaction.expirationDateTime = date
-        transaction.paygoStatus = 0
+        transaction.paymentProviderStatus = TransactionStatus.initiated
         transaction.paygoTransactionId = null
         transaction.paymentPixProvider = apiSettings.paygoPixProvider
         transaction.purchaseDate = new Date()

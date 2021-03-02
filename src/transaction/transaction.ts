@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { TransactionStatus } from './transaction_enum';
 
 @Entity()
 export class Transaction {
@@ -17,8 +18,8 @@ export class Transaction {
     @Column({ nullable: true, name: 'paygo_transaction_id' })
     paygoTransactionId?: String
 
-    @Column({ type: 'int', name: 'paygo_status' })
-    paygoStatus: number
+    @Column({ type: 'int', name: 'payment_provider_status', nullable: false })
+    paymentProviderStatus: TransactionStatus
 
     @Column({ default: false, name: 'enterative_activated' })
     enterativeActivated: boolean

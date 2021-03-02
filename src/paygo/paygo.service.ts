@@ -11,6 +11,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class PaygoService {
     private apiSettings: ApiSettings
+    jobRunning: boolean = false
+
     constructor(
         @InjectRepository(Transaction) private readonly repository: Repository<Transaction>,
         private transactionService: TransactionService,
@@ -21,34 +23,46 @@ export class PaygoService {
         });
     }
 
-
     @Interval(5000)
+    async update() {
+        if (this.jobRunning)
+            return
+        this.jobRunning = true
+        try {
+            await this.syncPaygoPurchaseOrders()
+            await this.syncPaygoPurchaseOrderStatuses()
+            await this.activateRegularOrders()
+        } catch (error) {
+            Logger.error(error)
+        } finally {
+            this.jobRunning = false
+        }
+    }
+
     async syncPaygoPurchaseOrderStatuses() {
         //List purchase orders that still don't have the qrCode
         let orders = await this.transactionService.findPaygoPendentOrders()
 
         orders.forEach((order) => {
             //Search the transaction on Paygo Service
-            if (order.paygoTransactionId)
-                this.searchPaygoTransaction(order.paygoTransactionId).then((paygoOrder) => {
-                    if (paygoOrder) {
-                        let status = order.paygoStatus
-                        let qrCode = order.qrCode
-                        let paygoQrCode = paygoOrder['payment']['pix']['qrCode']
-                        let paygoStatus = paygoOrder.status
+            this.searchPaygoTransaction(order.paygoTransactionId).then((paygoOrder) => {
+                if (paygoOrder) {
+                    let status = order.paymentProviderStatus
+                    let qrCode = order.qrCode
+                    let paygoQrCode = paygoOrder['payment']['pix']['qrCode']
+                    let paymentProviderStatus = paygoOrder.status
 
-                        //Update the qrCode and Status in local db
-                        if (status !== paygoStatus || qrCode != paygoQrCode) {
-                            order.qrCode = paygoQrCode
-                            order.paygoStatus = paygoStatus
-                            this.updateTransaction(order)
-                        }
+                    //Update the qrCode and Status in local db
+                    if (status != paymentProviderStatus || qrCode != paygoQrCode) {
+                        order.qrCode = paygoQrCode
+                        order.paymentProviderStatus = paymentProviderStatus
+                        this.updateTransaction(order)
                     }
-                })
+                }
+            })
         })
     }
 
-    @Interval(5000)
     async syncPaygoPurchaseOrders() {
         //List puchase orders that still don't have a paygoTransactionId
         let orders = await this.transactionService.findOrdersNotSyncedWithPayGo()
@@ -59,7 +73,6 @@ export class PaygoService {
         })
     }
 
-    @Interval(15000)
     async activateRegularOrders() {
         //List purchase orders that are already finished on PayGo and that were not activated on Enterative
         let orders = await this.transactionService.findEnterativePendentOrders()
@@ -83,7 +96,7 @@ export class PaygoService {
     async createPixPurchaseOrder(transaction: Transaction) {
         let payGoTransaction = await this.createPaygoTransaction(transaction)
         transaction.paygoTransactionId = payGoTransaction.transactionId
-        transaction.paygoStatus = payGoTransaction.status
+        transaction.paymentProviderStatus = payGoTransaction.status
         transaction.qrCode = payGoTransaction.payment.pix.qrCode
         this.updateTransaction(transaction)
     }

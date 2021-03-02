@@ -1,4 +1,4 @@
-import { ConflictException, Controller, Get, NotFoundException, Post, Query, UseGuards } from '@nestjs/common';
+import { ConflictException, Controller, Get, NotFoundException, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { TransactionService } from './transaction.service';
@@ -27,6 +27,12 @@ export class TransactionController {
         if (purchaseOrder.enterativeActivated)
             throw new ConflictException(`Order ${orderId} already processed`)
         return await this.transactionService.activateOrder(orderId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('reference/:id')
+    async getOrderByReference(@Param('id') id: Number) {
+        return this.transactionService.findOrderById(id)
     }
 
     @UseGuards(JwtAuthGuard)
