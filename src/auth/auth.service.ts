@@ -1,14 +1,16 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { jwtConstants } from './constants';
 import * as bcrypt from 'bcrypt'
+import { UserMappingService } from 'src/user-mapping/user-mapping.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private usersService: UserService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private userMappingService: UserMappingService
     ) { }
 
     async hashPassword(password: String) {
@@ -20,6 +22,11 @@ export class AuthService {
         var user = await this.usersService.getUserInfo({ login: username })
         if (!user)
             throw new HttpException(`User ${username} not found`, HttpStatus.UNAUTHORIZED)
+        let shopId = await this.userMappingService.getUserShopId(user.id)
+        if (!shopId) {
+            Logger.error(`The user ${user.id} has no shop set on the UserMapping table and it's mandatory`)
+            throw new UnauthorizedException(`The user ${user.id} has no shop set on the UserMapping table and it's mandatory`)
+        }
         var passEquals = await bcrypt.compare(password, user.password.toString())
         if (user && passEquals) {
             const { password, ...result } = user
