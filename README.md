@@ -24,7 +24,35 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Nest](https://github.com/nestjs/nest) Api to connect with Paygo and provide payment response behaviours
+
+## Getting Started
+
+  Clone the repo, then run 
+
+  ```bash
+  $ npm install
+  $ npm run start:dev
+  ```
+
+In order to fully work, after running access the https://server:port/api and in the swagger client, use
+
+```http
+POST /api-settings/set
+```
+
+To setup the parameters. The enterativeHost is the host for the Enterative WS. There's also a necessity of a paygo user to be registered on Enterative Web with the ROLE_PAYGO_INTEGRATOR role.
+There's also a parameter paygoBaseUrl that defines the postback url for paygo to send payment events to this api.
+
+After that use 
+
+```http
+POST user-mapping
+```
+
+To map a user to a shop. Use this to map every users that will be able to use this api. If a user is not mapped here, he/she won't be able to use it.
+
+Then use the /auth/login to login with a given user and receive a bearer token
 
 ## Installation
 
