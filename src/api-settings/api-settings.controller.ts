@@ -27,6 +27,7 @@ export class ApiSettingsController {
     @ApiQuery({ required: false, name: 'paygoBaseUrl', example: 'https://apidemo.gate2all.com.br/v1/transactions/' })
     @ApiQuery({ required: false, name: 'paygoPixKey', example: 'RANDOM_KEY' })
     @ApiQuery({ required: false, name: 'paygoPixProvider', example: 'C6BANK' })
+    @ApiQuery({ required: false, name: 'postBackUrl', example: 'https://sandbox.enterativeapk.tk/' })
     @ApiQuery({ required: false, name: 'puchaseDescriptionTemplate' })
     @Post('/set')
     async inserOrUpdate(
@@ -40,6 +41,7 @@ export class ApiSettingsController {
         @Query('paygoBaseUrl') paygoBaseUrl?: String,
         @Query('paygoPixKey') paygoPixKey?: String,
         @Query('paygoPixProvider') paygoPixProvider?: String,
+        @Query('postBackUrl') postBackUrl?: String,
         @Query('puchaseDescriptionTemplate') puchaseDescriptionTemplate?: String,
     ) {
         let settings = await this.apiSettingsService.findFirst();
@@ -55,6 +57,7 @@ export class ApiSettingsController {
         settings.paygoBaseUrl = paygoBaseUrl
         settings.paygoPixKey = paygoPixKey
         settings.paygoPixProvider = paygoPixProvider
+        settings.postBackUrl = postBackUrl
         settings.puchaseDescriptionTemplate = puchaseDescriptionTemplate
 
         return await this.apiSettingsService.insertOrUpdate(settings)

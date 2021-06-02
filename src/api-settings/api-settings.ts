@@ -38,6 +38,9 @@ export class ApiSettings {
     @Column({ default: '' })
     puchaseDescriptionTemplate: String
 
+    @Column()
+    postBackUrl: String
+
     getEnterativeUrl(): string {
         return `${this.enterativeHost}:${this.enterativePort.toString()}`
     }
