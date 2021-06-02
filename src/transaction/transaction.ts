@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { TransactionStatus } from './transaction_enum';
+import { EnterativeCommunicationStatus, TransactionStatus } from './transaction_enum';
 
 @Entity()
 export class Transaction {
@@ -20,6 +20,9 @@ export class Transaction {
 
     @Column({ type: 'int', name: 'payment_provider_status', nullable: false })
     paymentProviderStatus: TransactionStatus
+
+    @Column({ type: 'int', name: 'enterative_status', nullable: false, default: EnterativeCommunicationStatus.idle })
+    enterativeStatus: EnterativeCommunicationStatus
 
     @Column({ default: false, name: 'enterative_activated' })
     enterativeActivated: boolean
