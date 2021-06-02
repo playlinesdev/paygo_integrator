@@ -31,7 +31,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
 
-  SwaggerModule.setup('api-client', app, document);
+  SwaggerModule.setup('api', app, document);
 
   await app.init();
 
