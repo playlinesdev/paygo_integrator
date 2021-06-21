@@ -16,6 +16,7 @@ import { PaygoModule } from './paygo/paygo.module';
 import { EnterativeJobManagerModule } from './enterative-job-manager/enterative-job-manager.module';
 import { EnterativeJobManager } from './enterative-job-manager/enterative-job-manager';
 import { ApiSettingsService } from './api-settings/api-settings.service';
+import { EnterativeModule } from './enterative/enterative.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -31,7 +32,7 @@ import { ApiSettingsService } from './api-settings/api-settings.service';
     entities: [ApiSettings, Transaction, UserMapping, EnterativeJobManager,],
     synchronize: true,
     // logging: true,
-  }), TypeOrmModule.forFeature([ApiSettings]), ScheduleModule.forRoot(), TransactionModule, UserModule, AuthModule, ApiSettingsModule, UserMappingModule, PaygoModule, EnterativeJobManagerModule],
+  }), TypeOrmModule.forFeature([ApiSettings]), ScheduleModule.forRoot(), TransactionModule, UserModule, AuthModule, ApiSettingsModule, UserMappingModule, PaygoModule, EnterativeJobManagerModule, EnterativeModule],
   controllers: [AppController],
   providers: [AppService, ApiSettingsService],
 })
